@@ -5,15 +5,18 @@ var Schema = mongoose.Schema;
 
 // Using the Schema constructor, create a new ArticleSchema object
 var ArticleSchema = new Schema({
-  // The title, link, and summary are String types
+  // The title, link, and summary are String types and must be unique
   title: {
-    type: String
+    type: String,
+    unique: true
   },
   link: {
-    type: String
+    type: String,
+    unique: true
   },
   summary: {
-    type: String
+    type: String,
+    unique: true
   },
   isSaved: {
     type: Boolean,

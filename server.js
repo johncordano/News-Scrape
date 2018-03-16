@@ -60,20 +60,20 @@ app.get("/", function(req, res) {
     res.send("Hello world");
 });
 
-// Retrieve data from the db
-app.get("/all", function(req, res) {
-    // Find all results from the scrapedData collection in the db
-    db.scrapedData.find({}, function(error, found) {
-        // Throw any errors to the console
-        if (error) {
-            console.log(error);
-        }
-        // If there are no errors, send the data to the browser as json
-        else {
-            res.json(found);
-        }
-    });
-});
+// // Retrieve data from the db
+// app.get("/all", function(req, res) {
+//     // Find all results from the scrapedData collection in the db
+//     db.scrapedData.find({}, function(error, found) {
+//         // Throw any errors to the console
+//         if (error) {
+//             console.log(error);
+//         }
+//         // If there are no errors, send the data to the browser as json
+//         else {
+//             res.json(found);
+//         }
+//     });
+// });
 
 // // Scrape data from one site and place it into the mongodb db
 // app.get("/scrape", function(req, res) {
@@ -110,7 +110,7 @@ app.get("/all", function(req, res) {
 
 
 
-// Scrape data from one site and place it into the mongodb db
+// Route for scraping data from a site and placing it into the database
 app.get("/scrape", function(req, res) {
     // Make a request for sf.streetsblog
     request("https://sf.streetsblog.org/", function(error, response, html) {
@@ -163,7 +163,69 @@ app.get("/scrape", function(req, res) {
     res.send("Scrape Complete");
 });
 
+// Route for finding articles that are saved
+app.get("/saved", function(req, res) {
+  // Find all docs where isSaved is true in the scrapedData collection
+  db.scrapedData.find({ isSaved: true }, function(error, found) {
+    // Show any errors
+    if (error) {
+      console.log(error);
+    }
+    else {
+      // Otherwise, send the found articles to the browser as a json
+      res.json(found);
+    }
+  });
+});
 
+// Route for saving an article
+app.get("/savearticle/:id", function(req, res) {
+  // Update a doc in the scrapedData collection with an ObjectId matching the id parameter in the database
+  db.scrapedData.update(
+    {
+      _id: mongojs.ObjectId(req.params.id)
+    },
+    {
+      // Set "isSaved" to true for the specified article
+      $set: {
+        isSaved: true
+      }
+    },
+    // Run the following function
+    function(error, edited) {
+      // show any errors
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the result of the update to the browser
+        console.log(edited);
+        res.send(edited);
+      }
+    }
+  );
+});
+
+// Route for saving a new note to the database and associating it with an article
+app.post("/newnote", function (req, res) {
+  // Create a new note in the database
+  db.Note.create(req.body)
+    .then(function (dbNote) {
+      // If a Note is created successfully, find the article and push the new Note's _id to the article notes array
+      // { new: true } indicates the query returns the updated article, and not the default of the original article
+      return db.Article.findOneAndUpdate({}, { $push: { notes: dbNote._id } }, { new: true });
+    })
+    // Because the mongoose query returns a promise, chain another `.then` which receives the result of the query
+    .then(function (dbArticle) {
+      // If the Article is updated successfully, send it back to the client
+      res.json(dbArticle);
+    })
+    .catch(function (err) {
+      // If an error occurs, send it back to the client
+      res.json(err);
+    });
+});
 
 
 

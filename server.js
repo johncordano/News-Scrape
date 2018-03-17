@@ -34,16 +34,12 @@ app.set("view engine", "handlebars");
 // By default mongoose uses callbacks for async queries. Set mongoose to use promises (.then syntax) instead
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
-// mongoose.connect("mongodb://localhost/populatedb2", {
-//   useMongoClient: true
-// });
+mongoose.connect("mongodb://localhost/populatedb3");
+
 
 // Import the routes and give the server access to them.
 // var routes = require("./controllers/scraper_controller.js");
 // app.use(routes);
-
-
-
 
 // // Configure the database.
 // var databaseUrl = "newsScraper";
@@ -55,9 +51,23 @@ mongoose.Promise = Promise;
 //     console.log("Database Error:", error);
 // });
 
-// Main route (simple Hello World Message)
+// Route for the home page
 app.get("/", function(req, res) {
-    res.send("Hello world");
+  // Retrieve all data in the articles collection
+  db.Article.find({}, function(error, data) {
+    // If an error occurs, log the error
+    if (error) {
+      console.log(error);
+    }
+    // If no errors occur, send the data to the browser as a json object
+    else {
+      var hbsArticleObject = {
+        articles: data
+      };
+      res.render("index", hbsArticleObject);
+    }
+  });
+    
 });
 
 // // Retrieve data from the db
@@ -135,28 +145,26 @@ app.get("/scrape", function(req, res) {
             data[i].summary = summary
         });
 
-        console.log("============", data);
-
         // Use a loop to insert the data into the scrapedData database
-        // if (data.length > 1) {
-        //     for (var i = 0; i < data.length; i++) {
-        //         console.log("looping==================", data[i])
-        //         db.scrapedData.insert({
-        //           title: data[i].title,
-        //           link: data[i].link,
-        //           summary: data[i].summary
-        //         },
-        //         function(err, inserted) {
-        //             if (err) {
-        //                 // Log the error if one is encountered during the query
-        //                 console.log(err);
-        //             } else {
-        //                 // Otherwise, log the inserted data
-        //                 console.log(inserted);
-        //             }
-        //         });
-        //     }
-        // }
+        if (data.length > 1) {
+            for (var i = 0; i < data.length; i++) {
+                console.log("looping==================", data[i])
+                db.Article.create({
+                  title: data[i].title,
+                  link: data[i].link,
+                  summary: data[i].summary
+                },
+                function(err, inserted) {
+                    if (err) {
+                        // Log the error if one is encountered during the query
+                        console.log(err);
+                    } else {
+                        // Otherwise, log the inserted data
+                        console.log(inserted);
+                    }
+                });
+            }
+        }
     });
 
     // Send a "Scrape Complete" message to the browser
@@ -166,7 +174,7 @@ app.get("/scrape", function(req, res) {
 // Route for finding articles that are saved
 app.get("/saved", function(req, res) {
   // Find all docs where isSaved is true in the scrapedData collection
-  db.scrapedData.find({ isSaved: true }, function(error, found) {
+  db.Article.find({ isSaved: true }, function(error, found) {
     // Show any errors
     if (error) {
       console.log(error);
@@ -181,7 +189,7 @@ app.get("/saved", function(req, res) {
 // Route for saving an article
 app.get("/savearticle/:id", function(req, res) {
   // Update a doc in the scrapedData collection with an ObjectId matching the id parameter in the database
-  db.scrapedData.update(
+  db.Article.update(
     {
       _id: mongojs.ObjectId(req.params.id)
     },
@@ -225,6 +233,7 @@ app.post("/newnote", function (req, res) {
       // If an error occurs, send it back to the client
       res.json(err);
     });
+    console.log("newnote")
 });
 
 

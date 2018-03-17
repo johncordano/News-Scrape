@@ -1,0 +1,51 @@
+<div class="container">
+  {{!-- Display the page title. --}}
+  <div class="row" id="first-row">
+    <div align="center" class="col-md-12">
+      <h1>News Scrape</h1>
+      <h3>From Streetsblog San Francisco</h3>
+    </div>
+  </div>
+  {{!-- Use the burger-block.handlebars file to display the list of not devoured burgers, the list of devoured burgers, and the Devour It button for each not devoured burger. --}}
+  <div class="row" id="second-row">
+    <div class="col-md-12">
+    <ol>
+      {{#each articles}}
+       {{!--  {{#unless devoured}} --}}
+          {{!-- {{> article-block}} --}}
+        <li>
+          Title: {{title}}<br>
+          Link: {{link}}<br>
+          Summary: {{summary}}<br><br>
+        </li>
+       {{!--  {{/unless}} --}}
+      {{/each}}
+    </ol>
+    </div>
+{{!--     <div class="col-md-6">
+      <h3>Burgers Devoured</h3>
+    <ol>
+      {{#each burgers}}
+        {{#if devoured}}
+          {{> burgers/burger-block devour=false}}
+        {{/if}}
+      {{/each}}
+    </ol>
+    </div> --}}
+  </div>
+  {{!-- Display the form with a Submit button and a field to enter a burger name.  --}}
+{{!--   <div class="row" id="third-row">
+    <div align="center" class="col-md-12">
+      <form class="create-form">
+      <br><br>
+        <div class="form-group">
+          <input type="text" id="burg" name="burger_name">
+        </div>
+      <br><br>
+          <button class="btn btn-warning" type="submit">Submit</button>
+      <br><br>
+          <p>Enter the name of a burger that you want to devour, and click the Submit button.</p>
+      </form>
+    </div>
+  </div> --}}
+</div>

@@ -36,11 +36,9 @@ app.set("view engine", "handlebars");
 mongoose.Promise = Promise;
 mongoose.connect("mongodb://localhost/populatedb3");
 
-
 // Import the routes and give the server access to them.
 // var routes = require("./controllers/scraper_controller.js");
 // app.use(routes);
-
 
 // Route for the home page
 app.get("/", function(req, res) {
@@ -94,10 +92,10 @@ app.get("/scrape", function(req, res) {
                         link: data[i].link,
                         summary: data[i].summary
                     },
-                    function(err, inserted) {
-                        if (err) {
+                    function(error, inserted) {
+                        if (errors) {
                             // Log the error if one is encountered during the query
-                            console.log(err);
+                            console.log(error);
                         } else {
                             // Otherwise, log the inserted data
                             console.log(inserted);
@@ -130,35 +128,6 @@ app.get("/saved", function(req, res) {
     });
 });
 
-// // Route for saving an article
-// app.get("/savearticle/:id", function(req, res) {
-//   // Update an article in the articles collection with an ObjectId matching the id parameter in the database
-//   db.Article.update(
-//     {
-//       _id: mongojs.ObjectId(req.params.id)
-//     },
-//     {
-//       // Set "isSaved" to true for the specified article
-//       $set: {
-//         isSaved: true
-//       }
-//     },
-//     // Run the following function
-//     function(error, edited) {
-//       // Show any errors
-//       if (error) {
-//         console.log(error);
-//         res.send(error);
-//       }
-//       else {
-//         // Otherwise, send the result of the update to the browser
-//         console.log(edited);
-//         res.send(edited);
-//       }
-//     }
-//   );
-// });
-
 // Route for saving an article
 app.get("/savearticle/:_id", function(req, res) {
     // Update an article in the articles collection with an ObjectId matching the id parameter in the database
@@ -177,10 +146,6 @@ app.get("/savearticle/:_id", function(req, res) {
     });
 });
 
-
-
-
-
 // Route for saving a new note to the database and associating it with an article
 app.post("/newnote", function(req, res) {
     // Create a new note in the database
@@ -188,16 +153,16 @@ app.post("/newnote", function(req, res) {
         .then(function(dbNote) {
             // If a Note is created successfully, find the article and push the new Note's _id to the article notes array
             // {new: true} indicates the query returns the updated article, and not the default of the original article
-            return db.Article.findOneAndUpdate({}, { $push: { notes: dbNote._id } }, {new: true});
+            return db.Article.findOneAndUpdate({}, { $push: {notes: dbNote._id}}, {new: true});
         })
         // Because the mongoose query returns a promise, chain another `.then` which receives the result of the query
         .then(function(dbArticle) {
             // If the Article is updated successfully, send it back to the client
             res.json(dbArticle);
         })
-        .catch(function(err) {
+        .catch(function(error) {
             // If an error occurs, send it back to the client
-            res.json(err);
+            res.json(error);
         });
     console.log("newnote")
 });
@@ -206,9 +171,9 @@ app.post("/newnote", function(req, res) {
 app.get("/articles/:id", function(req,res) {
     db.Article.findOne({"_id":req.params.id})
     .populate("notes");
-    .exec (function (err, data) {
-        if (err) {
-            console.log(err);
+    exec (function (error, data) {
+        if (error) {
+            console.log(error);
         } else {
             console.log(data);
             res.json;
@@ -216,12 +181,11 @@ app.get("/articles/:id", function(req,res) {
     });        
 });
 
-
 // Route for deleting an article from the database
 app.get ("/deletearticle/:id", function(req, res) {
-    db.Article.findOneandRemove({_id:req.params.id}, function (err, data) {
-        if (err) {
-            console.log(err);
+    db.Article.findOneandRemove({_id:req.params.id}, function (error, data) {
+        if (errors) {
+            console.log(error);
         } else {
             console.log("Deleted article");
         }
@@ -231,9 +195,9 @@ app.get ("/deletearticle/:id", function(req, res) {
 
 // Route for deleting a note from the database
 app.get ("/deletenote/:id", function(req, res) {
-    db.Note.findOneandRemove({_id:req.params.id}, function (err, data) {
-        if (err) {
-            console.log(err);
+    db.Note.findOneandRemove({_id:req.params.id}, function (error, data) {
+        if (error) {
+            console.log(error);
         } else {
             console.log("Deleted note");
         }

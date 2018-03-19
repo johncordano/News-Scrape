@@ -6,12 +6,12 @@ $(".navbar-btn").on("click", function(event) {
     event.preventDefault();
     // Send the POST request.
     $.ajax("/scrape", {
-      type: "GET",
+      type: "GET"
     }).then(
       function() {
         // Reload the page to get the updated list.
         location.reload();
-      };
+      }
     );
 });
 
@@ -23,12 +23,12 @@ $(".change-save").on("click", function(event) {
     // Send the GET request.
     var id = $(this).data("_id");
     $.ajax("/savearticle/" + id, {
-      type: "GET",
+      type: "GET"
     }).then(
       function() {
         // Reload the page to get the updated list.
         location.reload();
-      };
+      }
     );
 });
 
@@ -39,12 +39,12 @@ $(".delete-save").on("click", function(event) {
     var id = $(this).data("_id");
     // Send the GET request.
     $.ajax("/deletearticle/" + id, {
-      type: "GET",
+      type: "GET"
     }).then(
       function() {
         // Reload the page to get the updated list.
         location.reload();
-      };
+      }
     );
 });
 
@@ -69,7 +69,7 @@ $(".change-note").on("click", function(event) {
     function() {
       // Reload the page to get the updated list.
       location.reload();
-    };
+    }
   );
 });
 

@@ -132,7 +132,7 @@ app.get("/saved", function(req, res) {
 
 // // Route for saving an article
 // app.get("/savearticle/:id", function(req, res) {
-//   // Update a doc in the scrapedData collection with an ObjectId matching the id parameter in the database
+//   // Update an article in the articles collection with an ObjectId matching the id parameter in the database
 //   db.Article.update(
 //     {
 //       _id: mongojs.ObjectId(req.params.id)
@@ -145,7 +145,7 @@ app.get("/saved", function(req, res) {
 //     },
 //     // Run the following function
 //     function(error, edited) {
-//       // show any errors
+//       // Show any errors
 //       if (error) {
 //         console.log(error);
 //         res.send(error);
@@ -202,14 +202,44 @@ app.post("/newnote", function(req, res) {
     console.log("newnote")
 });
 
+// Route for retrieving the notes for an article
+app.get("/articles/:id", function(req,res) {
+    db.Article.findOne({"_id":req.params.id})
+    .populate("notes");
+    .exec (function (err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(data);
+            res.json;
+        }
+    });        
+});
 
 
+// Route for deleting an article from the database
+app.get ("/deletearticle/:id", function(req, res) {
+    db.Article.findOneandRemove({_id:req.params.id}, function (err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Deleted article");
+        }
+        res.redirect("/saved");
+    });
+});
 
-
-
-
-
-
+// Route for deleting a note from the database
+app.get ("/deletenote/:id", function(req, res) {
+    db.Note.findOneandRemove({_id:req.params.id}, function (err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Deleted note");
+        }
+        res.send(data);
+    });
+});
 
 // Listen on port 3000
 app.listen(PORT, function() {

@@ -1,7 +1,7 @@
 // Wait until the DOM is fully loaded to attach the handlers.
 $(function() {
 // Run a function when the user clicks the Scrape New Articles button.
-  $(".navbar-btn").on("click", function(event) {
+$(".navbar-btn").on("click", function(event) {
     // PreventDefault on a click event.
     event.preventDefault();
     // Send the POST request.
@@ -11,12 +11,13 @@ $(function() {
       function() {
         // Reload the page to get the updated list.
         location.reload();
-      }
+      };
     );
-  });
+});
+
 
 // Run a function when the user clicks the Save Article button.
-  $(".change-save").on("click", function(event) {
+$(".change-save").on("click", function(event) {
     // PreventDefault on a click event.
     event.preventDefault();
     // Send the GET request.
@@ -27,10 +28,30 @@ $(function() {
       function() {
         // Reload the page to get the updated list.
         location.reload();
-      }
+      };
     );
-  });
 });
+
+// Run a function when the user clicks the Delete from Saved button
+$(".delete-save").on("click", function(event) {
+    // PreventDefault on a click event.
+    event.preventDefault();
+    var id = $(this).data("_id");
+    // Send the GET request.
+    $.ajax("/deletearticle/" + id, {
+      type: "GET",
+    }).then(
+      function() {
+        // Reload the page to get the updated list.
+        location.reload();
+      };
+    );
+});
+
+// Run a function when the user clicks the icon to delete a note
+
+
+
 
 // Run a function when the user clicks the Save Note button.
 $(".change-note").on("click", function(event) {
@@ -48,8 +69,9 @@ $(".change-note").on("click", function(event) {
     function() {
       // Reload the page to get the updated list.
       location.reload();
-    }
+    };
   );
+});
 
 
 
@@ -59,9 +81,7 @@ $(".change-note").on("click", function(event) {
 
 
 
-
-
-
+});
 
 //   // Run a function when the user clicks the Devour It! button.
 //   $(".change-devour").on("click", function(event) {

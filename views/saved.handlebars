@@ -39,7 +39,7 @@
         <li>
           Title: {{title}}<br>
           <button class= "btn btn-warning change-note">Article Notes</button><br><br>
-          <button class="btn btn-warning">Delete from Saved</button><br><br>
+          <button class="btn btn-warning delete-saved">Delete from Saved</button><br><br>
           Link: {{link}}<br>
           Summary: {{summary}}<br><br>
         </li>
@@ -60,7 +60,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Modal body text goes here.</p>
+        <form id="contact_form" action="/newnote" method="POST">
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary">Save Note</button>

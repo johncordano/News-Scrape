@@ -1,16 +1,28 @@
 // Wait until the DOM is fully loaded to attach the handlers.
 $(function() {
-  // Run a function when the user clicks the Save Article button.
+// Run a function when the user clicks the Scrape New Articles button.
+  $(".navbar-btn").on("click", function(event) {
+    // PreventDefault on a click event.
+    event.preventDefault();
+    // Send the POST request.
+    $.ajax("/scrape", {
+      type: "GET",
+    }).then(
+      function() {
+        // Reload the page to get the updated list.
+        location.reload();
+      }
+    );
+  });
+
+// Run a function when the user clicks the Save Article button.
   $(".change-save").on("click", function(event) {
-    var id = $(this).data("_id");
-    var newSave = $(this).data("newsave");
-    var newSaveState = {
-       isSaved: newSave
-     };
+    // PreventDefault on a click event.
+    event.preventDefault();
     // Send the GET request.
+    var id = $(this).data("_id");
     $.ajax("/savearticle/" + id, {
-      type: "get",
-      data: newSaveState
+      type: "GET",
     }).then(
       function() {
         // Reload the page to get the updated list.
@@ -20,7 +32,24 @@ $(function() {
   });
 });
 
-
+// Run a function when the user clicks the Save Note button.
+$(".change-note").on("click", function(event) {
+  // PreventDefault on a click event.
+  event.preventDefault();
+  var newNote = {
+    title: title,
+    body: body
+  };
+  // Send the POST request.
+  $.ajax("/newnote", {
+    type: "POST",
+    data: newNote
+  }).then(
+    function() {
+      // Reload the page to get the updated list.
+      location.reload();
+    }
+  );
 
 
 

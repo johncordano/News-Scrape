@@ -24,7 +24,7 @@ app.use(express.static("public"));
 
 // Set up the express app to handle data parsing.
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({type: "application/json"}));
 
 // Set Handlebars.
 var exphbs = require("express-handlebars");
@@ -61,9 +61,7 @@ app.get("/", function(req, res) {
 });
 
 // Route for scraping data from a site and placing it into the database
-// app.get("/scrape", function(req, res) {
-app.post("/scrape", function(req, res) {
-  // console.log("res begin", res);
+app.get("/scrape", function(req, res) {
     // Make a request for sf.streetsblog
     request("https://sf.streetsblog.org/", function(error, response, html) {
         // Load the html body from the request into cheerio
@@ -90,8 +88,7 @@ app.post("/scrape", function(req, res) {
 
         // Use a loop to insert the data into the scrapedData database
         if (data.length > 1) {
-            // for (var i = 0; i < data.length; i++) {
-            for (var i = 0; i < 2; i++) {
+            for (var i = 0; i < data.length; i++) {
                 db.Article.create({
                         title: data[i].title,
                         link: data[i].link,
@@ -107,42 +104,18 @@ app.post("/scrape", function(req, res) {
                         }
                     });
             }
+            res.json(data);
+        } else {
+            res.json([]);
         }
 
     });
-
-
-    // Send a "Scrape Complete" message to the browser
-    // res.send("Scrape Complete");
-    res.redirect("/");
-    // res.send({redirect: '/'});
-    // window.location.assign('/')
-    // location.reload(true);
-    // // Retrieve all data in the articles collection
-    // db.Article.find({}, function(error, data) {
-    //     // If an error occurs, log the error
-    //     if (error) {
-    //         console.log(error);
-    //     }
-    //     // If no errors occur, send the data to the browser as a json object
-    //     else {
-    //         var hbsArticleObject = {
-    //             articles: data
-    //         };
-    //         res.render("index", hbsArticleObject);
-    //     }
-    // });
-
-
 });
-
-
-
 
 // Route for finding articles that are saved
 app.get("/saved", function(req, res) {
     // Retrieve data for saved articles in the articles collection
-    db.Article.find({ isSaved: true }, function(error, data) {
+    db.Article.find({isSaved: true}, function(error, data) {
         // If an error occurs, log the error
         if (error) {
             console.log(error);
@@ -187,9 +160,9 @@ app.get("/saved", function(req, res) {
 // });
 
 // Route for saving an article
-app.get("/savearticle/:id", function(req, res) {
-    // Update a doc in the scrapedData collection with an ObjectId matching the id parameter in the database
-    db.Article.update({ isSaved: true }, function(error, data) {
+app.get("/savearticle/:_id", function(req, res) {
+    // Update an article in the articles collection with an ObjectId matching the id parameter in the database
+    db.Article.update({isSaved: true}, function(error, data) {
         // If an error occurs, log the error
         if (error) {
             console.log(error);
@@ -214,8 +187,8 @@ app.post("/newnote", function(req, res) {
     db.Note.create(req.body)
         .then(function(dbNote) {
             // If a Note is created successfully, find the article and push the new Note's _id to the article notes array
-            // { new: true } indicates the query returns the updated article, and not the default of the original article
-            return db.Article.findOneAndUpdate({}, { $push: { notes: dbNote._id } }, { new: true });
+            // {new: true} indicates the query returns the updated article, and not the default of the original article
+            return db.Article.findOneAndUpdate({}, { $push: { notes: dbNote._id } }, {new: true});
         })
         // Because the mongoose query returns a promise, chain another `.then` which receives the result of the query
         .then(function(dbArticle) {

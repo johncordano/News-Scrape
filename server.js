@@ -93,7 +93,7 @@ app.get("/scrape", function(req, res) {
                         summary: data[i].summary
                     },
                     function(error, inserted) {
-                        if (errors) {
+                        if (error) {
                             // Log the error if one is encountered during the query
                             console.log(error);
                         } else {
@@ -184,7 +184,7 @@ app.get("/articles/:id", function(req,res) {
 // Route for deleting an article from the database
 app.get ("/deletearticle/:id", function(req, res) {
     db.Article.findOneandRemove({_id:req.params.id}, function (error, data) {
-        if (errors) {
+        if (error) {
             console.log(error);
         } else {
             console.log("Deleted article");

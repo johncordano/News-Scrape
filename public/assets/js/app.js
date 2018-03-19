@@ -49,7 +49,7 @@ $(".delete-save").on("click", function(event) {
 });
 
 // Run a function when the user clicks the icon to delete a note
-
+// $("#results-modal").modal("show");
 
 
 

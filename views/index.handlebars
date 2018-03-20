@@ -34,22 +34,33 @@
   </div>
   <div class="row" id="second-row">
     <div class="col-md-12">
+    {{#if articles}}
     <ol>
       {{#each articles}}
         <li>
           Title: {{title}}<br>
-          <button class="change-save btn btn-warning">Save Article</button><br>
+          <button data-articleID="{{_id}}" class="change-save btn btn-warning" data-status="{{isSaved}}">
+          {{#if isSaved}}
+            Unsave Article
+          {{else}}
+            Save Article
+          {{/if}}
+        </button><br>
           Link: {{link}}<br>
           Summary: {{summary}}<br><br>
         </li>
       {{/each}}
     </ol>
+    {{else}}
+      <h2>There aren't any articles available.</h2>
+    {{/if}}
+
     </div>
   </div>
 </div>
 
 <!-- Modal form. -->
-<div class="results-modal" tabindex="-1" role="dialog">
+{{!-- <div class="results-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -66,4 +77,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}

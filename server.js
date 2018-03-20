@@ -34,7 +34,7 @@ app.set("view engine", "handlebars");
 mongoose.Promise = Promise;
 // Connect to the Mongo DB
 // mongoose.connect("mongodb://localhost/populatedb4");
-var databaseUri = process.env.MONGOBD_URI || "mongodb://localhost/populatedb4";
+var databaseUri = process.env.MONGODB_URI || "mongodb://localhost/populatedb4";
 mongoose.connect(databaseUri);
 var db2 = mongoose.connection;
 

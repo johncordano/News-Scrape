@@ -31,9 +31,16 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // By default mongoose uses callbacks for async queries. Set mongoose to use promises (.then syntax) instead
-// Connect to the Mongo DB
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/populatedb4");
+// Connect to the Mongo DB
+// mongoose.connect("mongodb://localhost/populatedb4");
+var databaseUri = "mongodb://localhost/populatedb4";
+if (process.env.MONGOBD_URI) {
+    mongoose.connect(process.env.MONGOBD_URI);
+} else {
+    mongoose.connect(databaseUri);
+}
+var db = mongoose.connection;
 
 // Route for the home page
 app.get("/", function(req, res) {

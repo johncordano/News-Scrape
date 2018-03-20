@@ -1,7 +1,6 @@
 // Dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
-// var mongojs = require("mongojs");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 // Require request and cheerio to enable scraping.
@@ -13,20 +12,20 @@ var PORT = process.env.PORT || 3333;
 // Require all models
 var db = require("./models");
 
-// Initialize Express.
+// Initialize Express
 var app = express();
 
 // Use morgan logger for logging requests
 app.use(logger("dev"));
 
-// Serve static content for the app from the public directory in the application directory.
+// Serve static content for the app from the public directory in the application directory
 app.use(express.static("public"));
 
-// Set up the express app to handle data parsing.
+// Set up the express app to handle data parsing
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({type: "application/json"}));
 
-// Set Handlebars.
+// Set Handlebars
 var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
@@ -35,10 +34,6 @@ app.set("view engine", "handlebars");
 // Connect to the Mongo DB
 mongoose.Promise = Promise;
 mongoose.connect("mongodb://localhost/populatedb4");
-
-// Import the routes and give the server access to them.
-// var routes = require("./controllers/scraper_controller.js");
-// app.use(routes);
 
 // Route for the home page
 app.get("/", function(req, res) {
@@ -53,8 +48,7 @@ app.get("/", function(req, res) {
             var hbsArticleObject = {
                 articles: []
             };
-            data.forEach(function(article){
-
+            data.forEach(function(article) {
                 hbsArticleObject.articles.push({
                     title:article.title,
                     isSaved: article.isSaved,
@@ -62,10 +56,8 @@ app.get("/", function(req, res) {
                     summary: article.summary,
                     notes:article.notes,
                     _id:article._id
-                })
-               //console.log("\n%%%%%%%%%%",article) 
+                }) 
             })
-            
             res.render("index", hbsArticleObject);
         }
     });
@@ -96,8 +88,7 @@ app.get("/scrape", function(req, res) {
             data[i].summary = summary
         });
 
-
-        // Use a loop to insert the data into the scrapedData database
+        // Use a loop to insert the data into the database
         if (data.length > 1) {
             for (var i = 0; i < data.length; i++) {
                 db.Article.create({
@@ -110,8 +101,6 @@ app.get("/scrape", function(req, res) {
                             // Log the error if one is encountered during the query
                             console.log(error);
                         } else {
-                            // Otherwise, log the inserted data
-                            //console.log(inserted);
                         }
                     });
             }
@@ -143,8 +132,6 @@ app.get("/saved", function(req, res) {
 
 // Route for saving an article
 app.post("/savearticle/:_id", function(req, res) {
-    //console.log(req.params._id)
-   // console.log(req.body.isSaved);
     // Update an article in the articles collection with an ObjectId matching the id parameter in the database
     db.Article.findOneAndUpdate({_id:req.params._id},{isSaved: req.body.isSaved}, function(error, data) {
         // If an error occurs, log the error
@@ -153,7 +140,6 @@ app.post("/savearticle/:_id", function(req, res) {
         }
         // If no errors occur, send the data to the browser as a json object
         else {
-            //console.log(data)
             var hbsArticleObject = {
                 articles: data
             };
@@ -167,14 +153,11 @@ app.post("/newnote/:articleID", function(req, res) {
     // Create a new note in the database
     db.Note.create(req.body)
         .then(function(dbNote) {
-     
-            //console.log("##",dbNote)
             // If a Note is created successfully, find the article and push the new Note's _id to the article notes array
             // {new: true} indicates the query returns the updated article, and not the default of the original article
            return db.Article.findOneAndUpdate({_id:req.params.articleID}, { $push: {notes: dbNote._id}})
            // Because the mongoose query returns a promise, chain another `.then` which receives the result of the query
             .then(function(dbArticle) {
-                //console.log("$$$$", dbNote)
                 // If the Article is updated successfully, send it back to the client
                 res.json(dbNote);
             })
@@ -183,12 +166,10 @@ app.post("/newnote/:articleID", function(req, res) {
                 res.json(error);
             });
         })
-
         .catch(function(error) {
             // If an error occurs, send it back to the client
             res.json(error);
         });
-    //console.log("newnote")
 });
 
 // Route for retrieving the notes for an article
@@ -200,8 +181,7 @@ app.get("/articles/:id/notes", function(req,res) {
             console.log(error);
         } else {
             console.log(data);
-            var notes = data.notes
-
+            var notes = data.notes;
             res.json(notes);
         }
     });        
@@ -213,7 +193,6 @@ app.get ("/deletearticle/:id", function(req, res) {
         if (error) {
             console.log(error);
         } else {
-            //console.log("Deleted article");
         }
         res.redirect("/saved");
     });
@@ -225,22 +204,20 @@ app.get ("/deletenote/:id", function(req, res) {
         if (error) {
             console.log(error);
         } else {
-            //console.log("Deleted note");
         }
         res.json(data);
     });
 });
 
-
+// Route for updating a note in the database
 app.post("/note/:noteId/update", function(req, res){
     console.log(req.body.body)
     db.Note.findOneAndUpdate({_id:req.params.noteId}, {body:req.body.body})
     .then(function(updatedNote){
-       console.log("~~~~~~~~\n",updatedNote)
        res.json(updatedNote)
     })
 })
-// Listen on port 3000
+// Listen on the port
 app.listen(PORT, function() {
     console.log("App running on port" + PORT);
 });

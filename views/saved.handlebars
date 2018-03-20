@@ -1,5 +1,4 @@
 
-
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -21,8 +20,6 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
-
 
 <div class="container">
   {{!-- Display the page title. --}}
@@ -53,7 +50,6 @@
 <!-- Modal -->
 <div class="modal fade" id="noteModal" role="dialog" data-articleID="">
   <div class="modal-dialog">
-  
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
@@ -62,31 +58,26 @@
         <h4 class="modal-title"></h4>
       </div>
       <div class="modal-body">
-
-       
        <div class="existing-note">
           {{!-- dynamically add articles notes here  --}}
        </div>
-        
         {{!-- add a new note --}}
        <div class="add-note-form">
           <div class="panel panel-default" align="center">
             <div class="panel-body">
             <form id="creat-note-form">
-              <p>add a note</p>
+              <p>Add a note</p>
               <textarea id="note-body" style="width:100%"></textarea>
               <br>
-              <button id="submit-note" class="btn btn-primary">submit</button>
+              <button id="submit-note" class="btn btn-primary">Submit</button>
               </form>
             </div>
           </div>
        </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
-    </div>
-    
+    </div>    
   </div>
 </div>

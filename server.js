@@ -40,7 +40,7 @@ if (process.env.MONGOBD_URI) {
 } else {
     mongoose.connect(databaseUri);
 }
-var db = mongoose.connection;
+var db2 = mongoose.connection;
 
 // Route for the home page
 app.get("/", function(req, res) {

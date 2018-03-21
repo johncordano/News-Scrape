@@ -2,6 +2,8 @@
 
 In this application, you can click the Scrape New Articles button to retrieve news articles from the Streetsblog San Francisco website. This information includes the article title, URL, and summary. After the articles are retrieved, you can click the Save Article button to save an article on the Saved Articles page. From the Saved Articles page, you can click the Article Notes button to add, update, and delete notes about an article. You can also click the Delete from Saved button to remove the article from the Saved Articles page. All information about the articles and notes is stored in a database.
 
+The application is deployed at: https://newsscrapecordano.herokuapp.com/
+
 # Sample Screenshots
 
 The following image shows the home page for the application where you click the Scrape New Articles button to see the news articles.  

@@ -1,4 +1,4 @@
-// Dependencies
+// Package dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
@@ -32,6 +32,7 @@ app.set("view engine", "handlebars");
 
 // By default mongoose uses callbacks for async queries. Set mongoose to use promises (.then syntax) instead
 mongoose.Promise = Promise;
+
 // Connect to the Mongo DB
 // mongoose.connect("mongodb://localhost/populatedb4");
 var databaseUri = process.env.MONGODB_URI || "mongodb://localhost/populatedb4";
@@ -74,18 +75,16 @@ app.get("/scrape", function(req, res) {
         var $ = cheerio.load(html);
         // Create an empty array for the scraped data
         var data = []
-        // For each element with a entry-title class
+        // For each element with a entry-title class, save the text and href of each link enclosed in the current element
         $(".entry-title").each(function(i, element) {
-            // Save the text and href of each link enclosed in the current element
             var title = $(element).children("a").text();
             var link = $(element).children("a").attr("href");
             // Push the title and link to the data array
             data.push({ title: title, link: link })
         });
 
-        // For each element with a entry-excerpt class
+        // For each element with a entry-excerpt clas, save the text enclosed in the current elements
         $(".entry-excerpt").each(function(i, element) {
-            // Save the text enclosed in the current element
             var summary = $(element).text();
             // Add the summary to the data array
             data[i].summary = summary
@@ -101,7 +100,7 @@ app.get("/scrape", function(req, res) {
                     },
                     function(error, inserted) {
                         if (error) {
-                            // Log the error if one is encountered during the query
+                            // If an error occurs, log the error
                             console.log(error);
                         } else {
                         }
@@ -111,7 +110,6 @@ app.get("/scrape", function(req, res) {
         } else {
             res.json([]);
         }
-
     });
 });
 
@@ -156,7 +154,7 @@ app.post("/newnote/:articleID", function(req, res) {
     // Create a new note in the database
     db.Note.create(req.body)
         .then(function(dbNote) {
-            // If a Note is created successfully, find the article and push the new Note's _id to the article notes array
+            // If a Note is created successfully, find the article and push the new Note's _id to the article notes array.
             // {new: true} indicates the query returns the updated article, and not the default of the original article
            return db.Article.findOneAndUpdate({_id:req.params.articleID}, { $push: {notes: dbNote._id}})
            // Because the mongoose query returns a promise, chain another `.then` which receives the result of the query
@@ -220,6 +218,7 @@ app.post("/note/:noteId/update", function(req, res){
        res.json(updatedNote)
     })
 })
+
 // Listen on the port
 app.listen(PORT, function() {
     console.log("App running on port" + PORT);

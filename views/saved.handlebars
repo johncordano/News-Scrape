@@ -29,6 +29,7 @@
       <h3>Your Saved Articles</h3>
     </div>
   </div>
+  {{!-- Display the saved articles and the Article Notes and Delete from Saved buttons for each article --}}
   <div class="row" id="second-row">
     <div class="col-md-12">
     <ol>
@@ -46,7 +47,6 @@
   </div>
 </div>
 
-<!-- Modal form. -->
 <!-- Modal -->
 <div class="modal fade" id="noteModal" role="dialog" data-articleID="">
   <div class="modal-dialog">
@@ -59,7 +59,7 @@
       </div>
       <div class="modal-body">
        <div class="existing-note">
-          {{!-- dynamically add articles notes here  --}}
+          {{!-- dynamically add articles notes --}}
        </div>
         {{!-- add a new note --}}
        <div class="add-note-form">

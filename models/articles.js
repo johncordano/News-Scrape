@@ -5,7 +5,6 @@ var Schema = mongoose.Schema;
 
 // Using the Schema constructor, create a new ArticleSchema object
 var ArticleSchema = new Schema({
-  // The title, link, and summary are String types and must be unique
   title: {
     type: String,
     unique: true
@@ -26,7 +25,7 @@ var ArticleSchema = new Schema({
   // The ref property links these ObjectIds to the Note model to populate the Article with any associated Notes
   notes: [
     {
-      // Store ObjectIds in the array
+      // Store the ObjectIds in the array
       type: Schema.Types.ObjectId,
       // The ObjectIds refer to the ids in the Note model
       ref: "Note"
@@ -34,7 +33,7 @@ var ArticleSchema = new Schema({
   ]
 });
 
-// This creates our model from the above schema by using mongoose's model method
+// Create the model from the above schema by using mongoose's model method
 var Article = mongoose.model("Article", ArticleSchema);
 
 // Export the Article model
